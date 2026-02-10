@@ -4,13 +4,21 @@ import 'package:flutter_application_1/components/MyText.dart';
 
 class LoginTemplate extends StatelessWidget {
 
+  const LoginTemplate({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Papacapim'),
-        centerTitle: true,
-      ),
+        title: ClipOval(
+          child: Image.asset(
+            'img/logo.png',
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),   
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

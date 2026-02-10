@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/templates/LoginTemplate.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +15,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Papacapim',
       home: LoginTemplate(),
+      theme: ThemeData(
+        textTheme: GoogleFonts.nunitoSansTextTheme(), 
+      ),
     );
   }
 }
