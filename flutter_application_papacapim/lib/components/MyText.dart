@@ -9,7 +9,7 @@ class MyText extends StatelessWidget{
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Text(text),
+      child: Text(text)
       );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/components/Button.dart';
+import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyText.dart';
+import 'package:flutter_application_1/components/MyTitle.dart';
+import 'package:flutter_application_1/components/MyUnderText.dart';
+
 
 class LoginTemplate extends StatelessWidget {
 
@@ -9,37 +12,64 @@ class LoginTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: ClipOval(
-          child: Image.asset(
-            'img/logo.png',
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),   
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            MyText(text: 'Você vai aprender Flutter'),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Button(text: 'Sim'),
-                  Button(text: 'Não'),
-                ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(100.0), 
+        child: AppBar(
+          flexibleSpace: Container(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                  child: CircleAvatar(
+                    radius: 50.0, 
+                    backgroundImage: AssetImage('img/logo.png'),
+                  ),
               ),
             ),
-            MyText(text: 'Escolha a sua resposta.'),
-            Expanded(child: Container()),
-            Text('Copyright ₢ Nós Mesmos')
-          ],
+          ),
         ),
+      ),  
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MyTitle(text: 'Papacapim'),
+            SizedBox(
+              width: 300,
+              child: TextField(
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: 'E-mail',
+                hintText: 'Digite seu e-mail',
+                prefixIcon: Icon(Icons.email),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            ),
+          const SizedBox(height: 20), 
+          SizedBox(
+            width: 300,
+            child: TextField(
+            obscureText: true, // Esconde a senha
+            decoration: InputDecoration(
+              labelText: 'Senha',
+              hintText: 'Digite sua senha',
+              prefixIcon: Icon(Icons.lock),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+          ),
+
+          const SizedBox(height: 30),
+
+          MyButton(text: 'Entrar'),
+          MyText(text: 'Não tem conta?'),
+          MyUnderText(text: 'Faça cadastro aqui.')
+  ],
+)
       )
     );
   }
