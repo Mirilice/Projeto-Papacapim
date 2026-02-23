@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyText.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
+import 'package:flutter_application_1/templates/LoginTemplate.dart';
 import 'package:flutter_application_1/components/MyUnderText.dart';
-import 'package:flutter_application_1/templates/RegisterTemplate.dart';
 
 
-class LoginTemplate extends StatelessWidget {
+class RegisterTemplate extends StatelessWidget {
 
-  const LoginTemplate({super.key});
+  const RegisterTemplate({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +52,24 @@ class LoginTemplate extends StatelessWidget {
           SizedBox(
             width: 300,
             child: TextField(
-            obscureText: true, // Esconde a senha
+            obscureText: true, 
             decoration: InputDecoration(
               labelText: 'Senha',
+              hintText: 'Digite sua senha',
+              prefixIcon: Icon(Icons.lock),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+          ),
+          const SizedBox(height: 20), 
+          SizedBox(
+            width: 300,
+            child: TextField(
+            obscureText: true, 
+            decoration: InputDecoration(
+              labelText: 'Confirme a sua senha',
               hintText: 'Digite sua senha',
               prefixIcon: Icon(Icons.lock),
               border: OutlineInputBorder(
@@ -67,8 +82,8 @@ class LoginTemplate extends StatelessWidget {
           const SizedBox(height: 30),
 
           MyButton(text: 'Entrar'),
-          MyText(text: 'Não tem conta?'),
-          MyUnderText(text: 'Faça cadastro aqui.', page: RegisterTemplate(),)
+          MyText(text: 'Já tem conta?'),
+          MyUnderText(text: 'Faça login aqui.', page: LoginTemplate()),
   ],
 )
       )
