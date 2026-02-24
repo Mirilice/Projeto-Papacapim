@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/templates/EditUserTemplate.dart';
 import 'package:flutter_application_1/templates/FeedTemplate.dart';
 import 'package:flutter_application_1/templates/LoginTemplate.dart';
 import 'package:flutter_application_1/templates/RegisterTemplate.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/cadastro': (context) => const RegisterTemplate(),
         '/feed': (context) => const FeedTemplate(),
         '/perfil': (context) => const UserTemplate(),
+        '/editar-perfil': (context) => const EditUserTemplate(),
       },
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyPost.dart';
+import 'package:flutter_application_1/templates/EditUserTemplate.dart';
 
 class UserTemplate extends StatelessWidget {
   static const String myUsername = "Maria Alice";
@@ -52,8 +53,10 @@ class UserTemplate extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditUserTemplate())),
+                    style: OutlinedButton.styleFrom(
                     shape: const StadiumBorder(),
                   ),
                   child: const Text("Editar perfil"),

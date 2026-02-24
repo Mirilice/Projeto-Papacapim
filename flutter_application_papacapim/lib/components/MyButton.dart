@@ -11,10 +11,10 @@ class MyButton extends StatelessWidget{
   Widget build(BuildContext context) {
     return 
     SizedBox(
-      width: 150,
-      height: 90,
+      width: 120,
+      height: 40,
       child: Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(0.0),
       child: ElevatedButton(
         onPressed: page == null
             ? null 

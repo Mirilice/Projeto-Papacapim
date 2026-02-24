@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyPost.dart';
-//import 'package:flutter_application_1/components/MyText.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
 import 'package:flutter_application_1/templates/UserTemplate.dart';
-//import 'package:flutter_application_1/components/MyUnderText.dart';
-
 
 class FeedTemplate extends StatelessWidget {
 
