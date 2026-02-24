@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyPost.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
+import 'package:flutter_application_1/templates/NewPostTemplate.dart';
 import 'package:flutter_application_1/templates/UserTemplate.dart';
 
 class FeedTemplate extends StatelessWidget {
@@ -13,6 +15,18 @@ class FeedTemplate extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.0), 
         child: AppBar(
+          actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Center(
+              child: SizedBox(
+                width: 90,
+                height: 45,
+                child: MyButton(text:'+',page: NewPostTemplate()),
+              ),
+            ),
+          ),
+        ],
           leading: Padding(
             padding: EdgeInsets.all(8),
             child: InkWell(

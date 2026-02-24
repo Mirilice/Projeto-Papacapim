@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyPost.dart';
 import 'package:flutter_application_1/templates/EditUserTemplate.dart';
+import 'package:flutter_application_1/templates/NewPostTemplate.dart';
 
 class UserTemplate extends StatelessWidget {
   static const String myUsername = "Maria Alice";
@@ -14,8 +16,18 @@ class UserTemplate extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Perfil"),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Center(
+              child: SizedBox(
+                width: 90,
+                height: 45,
+                child: MyButton(text:'+',page: NewPostTemplate()),
+              ),
+            ),
+          ),
+        ],
         elevation: 0.5,
       ),
       body: SingleChildScrollView(
@@ -116,6 +128,12 @@ class UserTemplate extends StatelessWidget {
               favorites: 2,
               content: "Saudades da minha viagem... ",
             ),
+            
+            // const SizedBox(height: 20),
+            // Center(
+            //   child: MyButton(text: 'Novo Post', page: NewPostTemplate()),
+            // )
+            
             
           ],
         ),

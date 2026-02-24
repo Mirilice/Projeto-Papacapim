@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
+import 'package:flutter_application_1/templates/LoginTemplate.dart';
 
 class EditUserTemplate extends StatelessWidget {
   final String name =  "Maria Alice";
@@ -93,6 +95,8 @@ class EditUserTemplate extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  MyButton(text: 'SAIR', page: LoginTemplate()),
                 ],
               ),
             ),

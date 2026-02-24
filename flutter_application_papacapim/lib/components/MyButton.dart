@@ -13,8 +13,6 @@ class MyButton extends StatelessWidget{
     SizedBox(
       width: 120,
       height: 40,
-      child: Padding(
-      padding: EdgeInsets.all(0.0),
       child: ElevatedButton(
         onPressed: page == null
             ? null 
@@ -23,7 +21,6 @@ class MyButton extends StatelessWidget{
             MaterialPageRoute(builder: (context) => page!),
           ),  
         child: Text(text)
-      )
       ),
     );
     

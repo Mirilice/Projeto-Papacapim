@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/templates/EditUserTemplate.dart';
 import 'package:flutter_application_1/templates/FeedTemplate.dart';
 import 'package:flutter_application_1/templates/LoginTemplate.dart';
+import 'package:flutter_application_1/templates/NewPostTemplate.dart';
 import 'package:flutter_application_1/templates/RegisterTemplate.dart';
 import 'package:flutter_application_1/templates/UserTemplate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/feed': (context) => const FeedTemplate(),
         '/perfil': (context) => const UserTemplate(),
         '/editar-perfil': (context) => const EditUserTemplate(),
+        '/postar': (context) => const NewPostTemplate(),
       },
     );
   }
