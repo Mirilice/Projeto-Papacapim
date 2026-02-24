@@ -77,7 +77,7 @@ class MyPost extends StatelessWidget {
                 ),
                 const Divider(
                   color: Colors.grey, 
-                  thickness: 0.3,          
+                  thickness: 0.4,          
                 ),
               ],
             ),
