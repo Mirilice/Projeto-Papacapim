@@ -3,6 +3,7 @@ import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyText.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
 import 'package:flutter_application_1/components/MyUnderText.dart';
+import 'package:flutter_application_1/templates/FeedTemplate.dart';
 import 'package:flutter_application_1/templates/RegisterTemplate.dart';
 
 
@@ -16,7 +17,7 @@ class LoginTemplate extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(100.0), 
         child: AppBar(
-          flexibleSpace: Container(
+          flexibleSpace: SafeArea(
             child: Center(
               child: Padding(
                 padding: EdgeInsets.all(8.0),
@@ -66,7 +67,7 @@ class LoginTemplate extends StatelessWidget {
 
           const SizedBox(height: 30),
 
-          MyButton(text: 'Entrar'),
+          MyButton(text: 'Entrar', page: FeedTemplate()),
           MyText(text: 'Não tem conta?'),
           MyUnderText(text: 'Faça cadastro aqui.', page: RegisterTemplate(),)
   ],

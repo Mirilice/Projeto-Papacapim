@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 class MyButton extends StatelessWidget{
 
   final String text;
-  const MyButton({super.key, required this.text});
+  final Widget? page;
+  const MyButton({super.key, required this.text, this.page});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,12 @@ class MyButton extends StatelessWidget{
       child: Padding(
       padding: EdgeInsets.all(8.0),
       child: ElevatedButton(
-        onPressed: () => print(text),  
+        onPressed: page == null
+            ? null 
+            : () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => page!),
+          ),  
         child: Text(text)
       )
       ),

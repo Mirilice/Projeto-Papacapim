@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/templates/FeedTemplate.dart';
 import 'package:flutter_application_1/templates/LoginTemplate.dart';
 import 'package:flutter_application_1/templates/RegisterTemplate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginTemplate(),
         '/cadastro': (context) => const RegisterTemplate(),
+        '/feed': (context) => const FeedTemplate(),
       },
     );
   }

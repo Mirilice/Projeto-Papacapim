@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyText.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
+import 'package:flutter_application_1/templates/FeedTemplate.dart';
 import 'package:flutter_application_1/templates/LoginTemplate.dart';
 import 'package:flutter_application_1/components/MyUnderText.dart';
 
@@ -81,7 +82,7 @@ class RegisterTemplate extends StatelessWidget {
 
           const SizedBox(height: 30),
 
-          MyButton(text: 'Entrar'),
+          MyButton(text: 'Entrar', page: FeedTemplate()),
           MyText(text: 'Já tem conta?'),
           MyUnderText(text: 'Faça login aqui.', page: LoginTemplate()),
   ],
