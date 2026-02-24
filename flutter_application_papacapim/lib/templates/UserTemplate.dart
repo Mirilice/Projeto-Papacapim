@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyButton.dart';
-import 'package:flutter_application_1/components/MyPost.dart';
+import 'package:flutter_application_1/components/MyPostUser.dart';
 import 'package:flutter_application_1/templates/EditUserTemplate.dart';
 import 'package:flutter_application_1/templates/NewPostTemplate.dart';
 
@@ -108,7 +108,7 @@ class UserTemplate extends StatelessWidget {
             const SizedBox(height: 20),
             const Divider(thickness: 0.5),
 
-            MyPost(
+            MyPostUser(
               username: myUsername,
               handle: myHandle,
               profileImg: 'img/logo.png',
@@ -118,7 +118,7 @@ class UserTemplate extends StatelessWidget {
               favorites: 2,
               content: "Desenvolvendo um projeto ESG incrível com IFBA e Nubank! 🚀",
             ),
-            MyPost(
+            MyPostUser(
               username: myUsername,
               handle: myHandle,
               profileImg: 'img/logo.png',
