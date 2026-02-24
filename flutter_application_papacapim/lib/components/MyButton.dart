@@ -20,6 +20,10 @@ class MyButton extends StatelessWidget{
             context,
             MaterialPageRoute(builder: (context) => page!),
           ),  
+          style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 154, 143, 216),
+              foregroundColor: Colors.black,
+            ),
         child: Text(text)
       ),
     );
