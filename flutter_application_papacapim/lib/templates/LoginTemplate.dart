@@ -53,7 +53,7 @@ class LoginTemplate extends StatelessWidget {
           SizedBox(
             width: 300,
             child: TextField(
-            obscureText: true, // Esconde a senha
+            obscureText: true, 
             decoration: InputDecoration(
               labelText: 'Senha',
               hintText: 'Digite sua senha',

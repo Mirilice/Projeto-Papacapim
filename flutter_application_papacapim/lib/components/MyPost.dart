@@ -53,7 +53,7 @@ class MyPost extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      "@$handle • $time""h", // Exemplo de tempo
+                      "@$handle • $time""h", 
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     const Spacer(),
