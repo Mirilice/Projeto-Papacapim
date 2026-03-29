@@ -21,17 +21,19 @@ class UserRepository {
   }
 
   Future<UpdateUser> getUserProfile(String login, String token) async {
-  try {
-    return await _apiService.getUserByLogin(login, token);
-  } catch (e) {
-    rethrow;
+    try {
+      return await _apiService.getUserByLogin(login, token);
+    } catch (e) {
+      rethrow;
+    }
   }
-}
-Future<UpdateUser> userPatch(int userId, UpdateUser updateData, String token) async {
-  try {
-    return await _apiService.userUpdate(userId, updateData, token);
-  } catch (e) {
-    rethrow;
+  Future<UpdateUser> userPatch(int userId, UpdateUser updateData, String token) async {
+    try {
+      return await _apiService.userUpdate(userId, updateData, token);
+    } catch (e) {
+      rethrow;
+    }
   }
+  Future<bool> deleteUser(int userId, String token) async => _apiService.deleteUser(userId, token);
 }
-}
+

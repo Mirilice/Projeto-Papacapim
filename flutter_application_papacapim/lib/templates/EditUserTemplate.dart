@@ -45,7 +45,6 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
   }
 
   void _loadData() async {
-    print("DEBUG: O token enviado é: '${widget.session.token}'");
     setState(() => _isLoading = true);
 
     try {
@@ -58,22 +57,23 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
         _hintNomeAtual = user.name;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      if (mounted){
+        ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Não foi possível carregar os dados atuais.")),
       );
+      }
     } finally {
       setState(() => _isLoading = false);
     }
   }
 
   void _update() async {
-    // Validação de senha
     if (_passwordController.text.isNotEmpty) {
       if (_passwordController.text != _confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("As senhas não coincidem!"),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.red,
           ),
         );
         return;
@@ -114,6 +114,44 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro $e"), backgroundColor: Colors.red),
       );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _delete() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Excluir Conta"),
+        content: const Text("Tem certeza? Esta ação não pode ser desfeita."),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancelar")),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              _performDelete();
+            }, 
+            child: const Text("Excluir", style: TextStyle(color: Colors.red))
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _performDelete() async {
+    setState(() => _isLoading = true);
+    try {
+      final ok = await _repository.deleteUser(widget.session.id, widget.session.token);
+      if (ok && mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginTemplate()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Erro: $e")));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -169,7 +207,6 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
                   MyTitle(text: "Editar perfil"),
                   MyInput(
                     label: "Nome",
-                    // Se _hintNomeAtual for nulo (enquanto carrega), mostra mensagem de espera
                     hint: _hintNomeAtual ?? "Buscando nome...",
                     icon: Icons.abc,
                     controller: _nameController,
@@ -195,6 +232,11 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
                     obscureText: true,
                   ),
                   const SizedBox(height: 20),
+                  TextButton(
+                    onPressed: _delete,
+                    child: const Text("Excluir minha conta permanentemente", 
+                      style: TextStyle(color: Colors.redAccent)),
+                  ),
                   MyButton(text: 'SAIR', page: const LoginTemplate()),
                 ],
               ),

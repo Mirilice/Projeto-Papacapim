@@ -10,7 +10,7 @@ class UserService {
 
   Future<UserSession> createUser(CreateUser post) async { 
   try {
-    http.Response res = await _client.post(
+    final res = await _client.post(
       Uri.parse('$_baseUrl/users'),
       headers: {"Content-Type": "application/json"},
       body: json.encode(post.toJson()),
@@ -28,7 +28,7 @@ class UserService {
   Future<UserSession> userLogin(String login, String password) async{
     
     try{
-      http.Response? res = await _client.post(
+      final res = await _client.post(
         Uri.parse('$_baseUrl/sessions'),
         headers: {
           "Content-Type":"application/json"
@@ -52,7 +52,7 @@ class UserService {
     Future<UpdateUser> userUpdate(int userId, UpdateUser updateData, String token) async{
     
     try{
-      http.Response? res = await _client.patch(
+      final res = await _client.patch(
         Uri.parse('$_baseUrl/users/$userId'),
         headers: {
           "Content-Type":"application/json",
@@ -91,4 +91,25 @@ class UserService {
     return Future.error(e);
   }
 }
+
+  Future<bool> deleteUser(int userId, String token) async{
+    
+    try{
+      final res = await _client.delete(
+        Uri.parse('$_baseUrl/users/$userId'),
+        headers: {
+          "Content-Type":"application/json",
+          "x-session-token": token
+        }
+      );
+      if(res.statusCode == 204){
+        return true;
+      }else{
+        throw Exception("Erro na API: ${res.statusCode}: ${res.body}");
+      }
+      
+    }catch(e){
+      return Future.error(e);
+    }
+  }
 }
