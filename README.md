@@ -17,8 +17,7 @@ Um aplicativo mobile desenvolvido em **Flutter** e **Dart**. Este projeto possui
 ## ⚙️ Pré-requisitos
 
 Antes de começar, certifique-se de que sua máquina atende aos requisitos abaixo:
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) instalado.
-- [Dart](https://dart.dev/get-dart) instalado.
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) instalado (já inclui o Dart).
 - Emulador configurado (Android/iOS) ou um dispositivo físico conectado.
 - *Para Windows (Desktop)*: Modo de desenvolvedor do Windows ativado e dependências do Visual Studio.
 
