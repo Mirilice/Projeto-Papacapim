@@ -1,17 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyButton.dart';
+import 'package:flutter_application_1/components/MyInput.dart';
 import 'package:flutter_application_1/components/MyText.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
 import 'package:flutter_application_1/components/MyUnderText.dart';
+import 'package:flutter_application_1/repositories/UserRepository.dart';
+import 'package:flutter_application_1/services/UserService.dart';
 import 'package:flutter_application_1/templates/FeedTemplate.dart';
 import 'package:flutter_application_1/templates/RegisterTemplate.dart';
 
 
-class LoginTemplate extends StatelessWidget {
+class LoginTemplate extends StatefulWidget {
 
   const LoginTemplate({super.key});
 
   @override
+  State<LoginTemplate> createState() => _LoginTemplateState();
+}
+
+class _LoginTemplateState extends State<LoginTemplate>{
+
+  final _loginController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  final _repository = UserRepository(UserService());
+
+  bool _isLoading = false;
+
+void _login() async{
+  setState(() {
+    _isLoading = true;
+  });
+  try{
+    await _repository.userLogin(
+      _loginController.text,
+      _passwordController.text
+    );
+
+    if(mounted){
+      Navigator.pushReplacement(
+          context, 
+          MaterialPageRoute(builder: (context)=> const FeedTemplate()));
+    }
+  }catch(e){
+    if(mounted){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Erro $e"), 
+          backgroundColor: Colors.red
+        )
+      );
+    }
+  }finally{
+    if (mounted) { 
+      setState(() {
+        _isLoading = false; 
+      });
+    }
+  }
+}
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
@@ -35,39 +83,14 @@ class LoginTemplate extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             MyTitle(text: 'Papacapim'),
-            SizedBox(
-              width: 300,
-              child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: 'E-mail',
-                hintText: 'Digite seu e-mail',
-                prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            ),
-          const SizedBox(height: 20), 
-          SizedBox(
-            width: 300,
-            child: TextField(
-            obscureText: true, 
-            decoration: InputDecoration(
-              labelText: 'Senha',
-              hintText: 'Digite sua senha',
-              prefixIcon: Icon(Icons.lock),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          ),
+            MyInput(label: 'Login', hint: 'Digite seu usuário', icon: Icons.person, controller: _loginController),
+            MyInput(label: 'Senha', hint: 'Digite sua senha', icon: Icons.lock, controller: _passwordController),
 
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
 
-          MyButton(text: 'Entrar', page: FeedTemplate()),
+          _isLoading
+            ? const CircularProgressIndicator()
+            :  MyButton(text: 'Entrar', onPressed: _login), 
           MyText(text: 'Não tem conta?'),
           MyUnderText(text: 'Faça cadastro aqui.', page: RegisterTemplate(),)
   ],

@@ -4,8 +4,8 @@ import 'package:flutter_application_1/components/MyInput.dart';
 import 'package:flutter_application_1/components/MyText.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
 import 'package:flutter_application_1/models/UserPost.dart';
-import 'package:flutter_application_1/repositories/createUserRepository.dart';
-import 'package:flutter_application_1/services/PapacapimService.dart';
+import 'package:flutter_application_1/repositories/UserRepository.dart';
+import 'package:flutter_application_1/services/UserService.dart';
 import 'package:flutter_application_1/templates/FeedTemplate.dart';
 import 'package:flutter_application_1/templates/LoginTemplate.dart';
 import 'package:flutter_application_1/components/MyUnderText.dart';
@@ -25,19 +25,11 @@ class _RegisterTemplateState extends State<RegisterTemplate>{
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  final _repository = CreateUserRepository(Papacapimservice());
+  final _repository = UserRepository(UserService());
 
   bool _isLoading = false;
 
   void _register() async{
-    if(_passwordController.text != _confirmPasswordController.text){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("As senhas não coincidem!"))
-      );
-      return;
-    }
-
-    setState(() => _isLoading = true);
 
     try{
       UserPost newUser = UserPost(login: _loginController.text, name: _nameController.text, password: _passwordController.text);
