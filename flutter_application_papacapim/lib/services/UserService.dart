@@ -16,15 +16,9 @@ class UserService {
       body: json.encode(post.toJson()),
     );
 
-
-    print("STATUS: ${res.statusCode}");
-    print("RESPOSTA DA API: ${res.body}");
-    
     if (res.statusCode == 201 || res.statusCode == 200) {
       return UserSession.fromJson(json.decode(res.body));
     } else {
-      print(res.body);
-      print(res.statusCode);
       throw Exception("Erro na API: ${res.statusCode}: ${res.body}");
     }
   } catch (e) {

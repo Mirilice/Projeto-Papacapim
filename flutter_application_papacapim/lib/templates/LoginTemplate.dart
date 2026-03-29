@@ -84,7 +84,7 @@ void _login() async{
           children: [
             MyTitle(text: 'Papacapim'),
             MyInput(label: 'Login', hint: 'Digite seu usuário', icon: Icons.person, controller: _loginController),
-            MyInput(label: 'Senha', hint: 'Digite sua senha', icon: Icons.lock, controller: _passwordController),
+            MyInput(label: 'Senha', hint: 'Digite sua senha', icon: Icons.lock, controller: _passwordController, obscureText: true),
 
           const SizedBox(height: 10),
 
