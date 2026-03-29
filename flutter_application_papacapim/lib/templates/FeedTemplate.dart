@@ -27,12 +27,31 @@ class FeedTemplate extends StatelessWidget {
             ),
           ),
           flexibleSpace: SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 50.0,
-                  backgroundImage: AssetImage('img/logo.png'),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(80, 10, 15, 10), 
+              child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: TextField(
+                  textAlign: TextAlign.center, 
+                  textAlignVertical: TextAlignVertical.center,
+                  onTap: () {},
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 20),
+                    
+                    hintText: "Buscar",
+                    hintStyle: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 15,
+                    ),
+                    
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    suffixIcon: const Icon(Icons.search, color: Colors.transparent), 
+                  ),
                 ),
               ),
             ),
