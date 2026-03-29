@@ -5,7 +5,9 @@ class MyButton extends StatelessWidget{
 
   final String text;
   final Widget? page;
-  const MyButton({super.key, required this.text, this.page});
+  final VoidCallback? onPressed;
+
+  const MyButton({super.key, required this.text, this.page, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +16,18 @@ class MyButton extends StatelessWidget{
       width: 120,
       height: 40,
       child: ElevatedButton(
-        onPressed: page == null
+        onPressed: (page == null && onPressed == null)
             ? null 
-            : () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => page!),
-          ),  
+            : () {
+              if (onPressed != null){
+                onPressed!();
+              }else if (page != null){
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => page!),
+              );
+            }
+            },
           style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 154, 143, 216),
               foregroundColor: Colors.black,

@@ -1,15 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyButton.dart';
+import 'package:flutter_application_1/components/MyInput.dart';
 import 'package:flutter_application_1/components/MyText.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
+import 'package:flutter_application_1/models/UserPost.dart';
+import 'package:flutter_application_1/repositories/createUserRepository.dart';
+import 'package:flutter_application_1/services/PapacapimService.dart';
 import 'package:flutter_application_1/templates/FeedTemplate.dart';
 import 'package:flutter_application_1/templates/LoginTemplate.dart';
 import 'package:flutter_application_1/components/MyUnderText.dart';
 
-
-class RegisterTemplate extends StatelessWidget {
+class RegisterTemplate extends StatefulWidget {
 
   const RegisterTemplate({super.key});
+
+  @override
+  State<RegisterTemplate> createState() => _RegisterTemplateState();
+}
+
+class _RegisterTemplateState extends State<RegisterTemplate>{
+
+  final _loginController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  final _repository = CreateUserRepository(Papacapimservice());
+
+  bool _isLoading = false;
+
+  void _register() async{
+    if(_passwordController.text != _confirmPasswordController.text){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("As senhas não coincidem!"))
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try{
+      UserPost newUser = UserPost(login: _loginController.text, name: _nameController.text, password: _passwordController.text);
+      await _repository.createUser(newUser);
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context, 
+        MaterialPageRoute(builder: (context)=> const FeedTemplate()));
+    }catch(e){
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Erro $e"), 
+          backgroundColor: Colors.red
+        )
+      );
+    }finally{
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,54 +83,16 @@ class RegisterTemplate extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             MyTitle(text: 'Papacapim'),
-            SizedBox(
-              width: 300,
-              child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: 'E-mail',
-                hintText: 'Digite seu e-mail',
-                prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            ),
-          const SizedBox(height: 20), 
-          SizedBox(
-            width: 300,
-            child: TextField(
-            obscureText: true, 
-            decoration: InputDecoration(
-              labelText: 'Senha',
-              hintText: 'Digite sua senha',
-              prefixIcon: Icon(Icons.lock),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          ),
-          const SizedBox(height: 20), 
-          SizedBox(
-            width: 300,
-            child: TextField(
-            obscureText: true, 
-            decoration: InputDecoration(
-              labelText: 'Confirme a sua senha',
-              hintText: 'Digite sua senha',
-              prefixIcon: Icon(Icons.lock),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          ),
+            MyInput(label: 'Login', hint: 'Crie um login', icon: Icons.person, controller: _loginController),
+            MyInput(label: 'Nome', hint: 'Digite seu nome', icon: Icons.abc, controller: _nameController),
+            MyInput(label: 'Senha', hint: 'Digite sua senha', icon: Icons.lock, controller: _passwordController, obscureText: true),
+            MyInput(label: 'Confirme a senha', hint: 'Confirme a sua senha', icon: Icons.lock, controller: _confirmPasswordController, obscureText: true),
 
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
 
-          MyButton(text: 'Entrar', page: FeedTemplate()),
+          _isLoading
+            ? const CircularProgressIndicator()
+            :  MyButton(text: 'Entrar', onPressed: _register),         
           MyText(text: 'Já tem conta?'),
           MyUnderText(text: 'Faça login aqui.', page: LoginTemplate()),
   ],
