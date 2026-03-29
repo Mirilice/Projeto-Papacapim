@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyPostUser.dart';
 import 'package:flutter_application_1/models/UserSession.dart';
 import 'package:flutter_application_1/templates/EditUserTemplate.dart';
 import 'package:flutter_application_1/templates/NewPostTemplate.dart';
-
 
 class UserTemplate extends StatelessWidget {
   static const String myUsername = "Maria Alice";
@@ -20,23 +18,6 @@ class UserTemplate extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Perfil"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Center(
-              child: SizedBox(
-                width: 90,
-                height: 45,
-                child: MyButton(
-                  text:'+',
-                  onPressed: ()=> Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context)=> NewPostTemplate(session: session))
-                  )),
-              ),
-            ),
-          ),
-        ],
         elevation: 0.5,
       ),
       body: SingleChildScrollView(
@@ -49,7 +30,7 @@ class UserTemplate extends StatelessWidget {
                 Container(
                   height: 150,
                   width: double.infinity,
-                  color: Colors.blue[300], 
+                  color: Colors.blue[300],
                 ),
                 Positioned(
                   bottom: -40,
@@ -57,7 +38,7 @@ class UserTemplate extends StatelessWidget {
                   child: Container(
                     width: 70,
                     height: 70,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage('img/logo.png'),
@@ -68,23 +49,22 @@ class UserTemplate extends StatelessWidget {
                 ),
               ],
             ),
-
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: OutlinedButton(
                   onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EditUserTemplate(session: session))),
-                    style: OutlinedButton.styleFrom(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditUserTemplate(session: session))),
+                  style: OutlinedButton.styleFrom(
                     shape: const StadiumBorder(),
                   ),
                   child: const Text("Editar perfil"),
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -107,16 +87,15 @@ class UserTemplate extends StatelessWidget {
                     children: [
                       const Icon(Icons.calendar_month, size: 16, color: Colors.grey),
                       const SizedBox(width: 4),
-                      Text("Ingressou em $myYear", style: TextStyle(color: Colors.grey[600])),
+                      Text("Ingressou em $myYear",
+                          style: TextStyle(color: Colors.grey[600])),
                     ],
                   ),
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
             const Divider(thickness: 0.5),
-
             MyPostUser(
               username: myUsername,
               handle: myHandle,
@@ -137,15 +116,17 @@ class UserTemplate extends StatelessWidget {
               favorites: 2,
               content: "Saudades da minha viagem... ",
             ),
-            
-            // const SizedBox(height: 20),
-            // Center(
-            //   child: MyButton(text: 'Novo Post', page: NewPostTemplate()),
-            // )
-            
-            
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
+        backgroundColor: Colors.blue,
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NewPostTemplate(session: session)),
+        ),
+        child: const Text('+', style: TextStyle(color: Colors.white, fontSize: 24)),
       ),
     );
   }
