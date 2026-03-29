@@ -3,7 +3,7 @@ import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyInput.dart';
 import 'package:flutter_application_1/components/MyText.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
-import 'package:flutter_application_1/models/UserPost.dart';
+import 'package:flutter_application_1/models/CreateUser.dart';
 import 'package:flutter_application_1/repositories/UserRepository.dart';
 import 'package:flutter_application_1/services/UserService.dart';
 import 'package:flutter_application_1/templates/FeedTemplate.dart';
@@ -29,16 +29,31 @@ class _RegisterTemplateState extends State<RegisterTemplate>{
 
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _loginController.clear();
+    _nameController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+  }
+
   void _register() async{
 
+    setState(() => _isLoading = true);
     try{
-      UserPost newUser = UserPost(login: _loginController.text, name: _nameController.text, password: _passwordController.text);
+      CreateUser newUser = CreateUser(login: _loginController.text, name: _nameController.text, password: _passwordController.text);
       await _repository.createUser(newUser);
+
+      final sessionToken = await _repository.userLogin(
+        _loginController.text,
+        _passwordController.text
+      );
       if (!mounted) return;
 
       Navigator.pushReplacement(
         context, 
-        MaterialPageRoute(builder: (context)=> const FeedTemplate()));
+        MaterialPageRoute(builder: (context)=> FeedTemplate(session: sessionToken)));
     }catch(e){
         ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

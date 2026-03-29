@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyPostUser.dart';
+import 'package:flutter_application_1/models/UserSession.dart';
 import 'package:flutter_application_1/templates/EditUserTemplate.dart';
 import 'package:flutter_application_1/templates/NewPostTemplate.dart';
+
 
 class UserTemplate extends StatelessWidget {
   static const String myUsername = "Maria Alice";
   static const String myHandle = "malice_dev";
   static const String myBio = "Pode passar que o cachorro tá amarrado";
   static const int myYear = 2025;
-  const UserTemplate({super.key});
+
+  final UserSession session;
+  const UserTemplate({super.key, required this.session});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,12 @@ class UserTemplate extends StatelessWidget {
               child: SizedBox(
                 width: 90,
                 height: 45,
-                child: MyButton(text:'+',page: NewPostTemplate()),
+                child: MyButton(
+                  text:'+',
+                  onPressed: ()=> Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context)=> NewPostTemplate(session: session))
+                  )),
               ),
             ),
           ),
@@ -67,7 +76,7 @@ class UserTemplate extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => EditUserTemplate())),
+                    MaterialPageRoute(builder: (context) => EditUserTemplate(session: session))),
                     style: OutlinedButton.styleFrom(
                     shape: const StadiumBorder(),
                   ),

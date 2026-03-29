@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/components/MyPost.dart';
 import 'package:flutter_application_1/components/MyTitle.dart';
+import 'package:flutter_application_1/models/UserSession.dart';
 import 'package:flutter_application_1/templates/NewPostTemplate.dart';
 import 'package:flutter_application_1/templates/UserTemplate.dart';
 
 class FeedTemplate extends StatelessWidget {
 
-  const FeedTemplate({super.key});
+  final UserSession session;
+  const FeedTemplate({super.key, required this.session});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,12 @@ class FeedTemplate extends StatelessWidget {
               child: SizedBox(
                 width: 90,
                 height: 45,
-                child: MyButton(text:'+',page: NewPostTemplate()),
+                child: MyButton(
+                  text:'+',
+                  onPressed: ()=> Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context)=> NewPostTemplate(session: session))
+                  )),
               ),
             ),
           ),
@@ -31,7 +38,7 @@ class FeedTemplate extends StatelessWidget {
             padding: EdgeInsets.all(8),
             child: InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const UserTemplate()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => UserTemplate(session: session)));
             },
             child: const CircleAvatar(
               backgroundImage: AssetImage('img/logo.png'),

@@ -18,13 +18,13 @@ class UserSession {
   });
 
   factory UserSession.fromJson(Map<String, dynamic> json) => UserSession(
-    id: json['id'],
-    login: json['user_login'],
-    token: json['token'],
-    ip: json['ip'],
-    created_at: json['created_at'],
-    updated_at: json['updated_at'],
-    password: ''
+    id: json['id'] ?? 0,
+    login: json['login'] ?? json['user_login'] ?? '', 
+    token: json['token'] ?? '',
+    ip: json['ip'] ?? '',
+    created_at: json['created_at'] ?? '',
+    updated_at: json['updated_at'] ?? '',
+    password: '',
   );
   Map<String, dynamic> toJson() => {
     "id": id,

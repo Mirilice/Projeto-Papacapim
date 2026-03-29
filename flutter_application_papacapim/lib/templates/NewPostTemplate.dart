@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyButton.dart';
-import 'package:flutter_application_1/templates/FeedTemplate.dart';
+import 'package:flutter_application_1/models/UserSession.dart';
 
 class NewPostTemplate extends StatelessWidget {
-  const NewPostTemplate ({super.key});
+  final UserSession session;
+  const NewPostTemplate ({super.key, required this.session});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +14,7 @@ class NewPostTemplate extends StatelessWidget {
         elevation: 0.5,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black),
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => FeedTemplate())),
+          onPressed: () => Navigator.pop(context),
         ),
         actions: [
           Padding(

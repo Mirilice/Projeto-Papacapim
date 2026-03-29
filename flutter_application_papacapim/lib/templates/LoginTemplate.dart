@@ -32,7 +32,7 @@ void _login() async{
     _isLoading = true;
   });
   try{
-    await _repository.userLogin(
+    final session = await _repository.userLogin(
       _loginController.text,
       _passwordController.text
     );
@@ -40,7 +40,7 @@ void _login() async{
     if(mounted){
       Navigator.pushReplacement(
           context, 
-          MaterialPageRoute(builder: (context)=> const FeedTemplate()));
+          MaterialPageRoute(builder: (context)=> FeedTemplate(session: session)));
     }
   }catch(e){
     if(mounted){
