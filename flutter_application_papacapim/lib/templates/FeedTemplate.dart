@@ -73,7 +73,10 @@ class _FeedTemplateState extends State<FeedTemplate> {
       });
     }
     try {
-      final novos = await _postRepository.getPosts(widget.session.token, page: _currentPage);
+      final novos = await _postRepository.getPosts(
+        widget.session.token,
+        page: _currentPage,
+      );
       setState(() {
         _posts.addAll(novos);
         _hasMore = novos.isNotEmpty;
@@ -100,51 +103,38 @@ class _FeedTemplateState extends State<FeedTemplate> {
     await _carregarPosts(reset: true);
   }
 
-  // Busca: tenta usuário primeiro, depois posts
-  Future<void> _realizarBusca(String query) async {
-    if (query.trim().isEmpty) {
-      _limparBusca();
-      return;
-    }
-
-    setState(() {
-      _isSearching = true;
-      _isLoadingBusca = true;
-      _usuarioEncontrado = null;
-      _postsBusca = [];
-      _erroBusca = null;
-    });
-
-    // Tenta buscar usuário
-    try {
-      final user = await _userRepository.getUserProfile(query.trim(), widget.session.token);
-      setState(() {
-        _usuarioEncontrado = user;
-        _isLoadingBusca = false;
-      });
-      return;
-    } catch (_) {
-      // não encontrou usuário, tenta buscar posts
-    }
-
-    // Busca posts pelo termo
-    try {
-      final posts = await _postRepository.getPosts(
-        widget.session.token,
-        search: query.trim(),
-      );
-      setState(() {
-        _postsBusca = posts;
-        _isLoadingBusca = false;
-        if (posts.isEmpty) _erroBusca = 'Nenhum resultado para "$query".';
-      });
-    } catch (e) {
-      setState(() {
-        _erroBusca = 'Erro ao buscar.';
-        _isLoadingBusca = false;
-      });
-    }
+Future<void> _realizarBusca(String query) async {
+  if (query.trim().isEmpty) {
+    _limparBusca();
+    return;
   }
+
+  setState(() {
+    _isSearching = true;
+    _isLoadingBusca = true;
+    _usuarioEncontrado = null;
+    _postsBusca = [];
+    _erroBusca = null;
+  });
+
+  // Busca usuário E posts ao mesmo tempo
+  await Future.wait([
+    _userRepository.getUserProfile(query.trim(), widget.session.token).then((user) {
+      setState(() => _usuarioEncontrado = user);
+    }).catchError((_) {}), // silencia se não encontrar
+
+    _postRepository.getPosts(widget.session.token, search: query.trim()).then((posts) {
+      setState(() => _postsBusca = posts);
+    }).catchError((_) {}),
+  ]);
+
+  setState(() {
+    _isLoadingBusca = false;
+    if (_usuarioEncontrado == null && _postsBusca.isEmpty) {
+      _erroBusca = 'Nenhum resultado para "$query".';
+    }
+  });
+}
 
   void _limparBusca() {
     _searchController.clear();
@@ -267,50 +257,54 @@ class _FeedTemplateState extends State<FeedTemplate> {
     );
   }
 
-  Widget _buildResultadoBusca() {
-    if (_isLoadingBusca) return const Center(child: CircularProgressIndicator());
+Widget _buildResultadoBusca() {
+  if (_isLoadingBusca) return const Center(child: CircularProgressIndicator());
 
-    if (_erroBusca != null) {
-      return Center(child: Text(_erroBusca!, style: const TextStyle(color: Colors.grey)));
-    }
+  if (_erroBusca != null) {
+    return Center(child: Text(_erroBusca!, style: const TextStyle(color: Colors.grey)));
+  }
 
-    // Resultado de usuário
-    if (_usuarioEncontrado != null) {
-      return ListView(
-        children: [
-          ListTile(
-            leading: const CircleAvatar(backgroundImage: AssetImage('img/logo.png')),
-            title: Text(
-              _usuarioEncontrado!.name ?? 'Sem nome',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text('@${_usuarioEncontrado!.login}'),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => UserTemplate(
-                  session: widget.session,
-                  searchedUser: _usuarioEncontrado,
-                ),
+  return ListView(
+    children: [
+      // Seção de usuário encontrado
+      if (_usuarioEncontrado != null) ...[
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Text('Usuário', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+        ),
+        ListTile(
+          leading: const CircleAvatar(backgroundImage: AssetImage('img/logo.png')),
+          title: Text(
+            _usuarioEncontrado!.name ?? 'Sem nome',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text('@${_usuarioEncontrado!.login}'),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => UserTemplate(
+                session: widget.session,
+                searchedUser: _usuarioEncontrado,
               ),
             ),
           ),
-        ],
-      );
-    }
-
-    // Resultado de posts
-    if (_postsBusca.isNotEmpty) {
-      return ListView.builder(
-        itemCount: _postsBusca.length,
-        itemBuilder: (ctx, i) => PostCard(
-          post: _postsBusca[i],
-          session: widget.session,
-          onDeleted: () => setState(() => _postsBusca.removeAt(i)),
         ),
-      );
-    }
+        const Divider(),
+      ],
 
-    return const SizedBox();
-  }
+      // Seção de posts encontrados
+      if (_postsBusca.isNotEmpty) ...[
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Text('Posts', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+        ),
+        ..._postsBusca.asMap().entries.map((e) => PostCard(
+          post: e.value,
+          session: widget.session,
+          onDeleted: () => setState(() => _postsBusca.removeAt(e.key)),
+        )),
+      ],
+    ],
+  );
+}
 }

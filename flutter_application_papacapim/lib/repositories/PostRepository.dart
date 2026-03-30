@@ -22,8 +22,8 @@ class PostRepository {
   Future<void> deletePost(String token, int postId) =>
       _service.deletePost(token, postId);
 
-  Future<List<Post>> getUserPosts(String token, String login, {int page = 1}) =>
-      _service.getUserPosts(token, login, page: page);
+  Future<List<Post>> getUserPosts(String token, String login) =>
+      _service.getUserPosts(token, login);
 
   Future<List<Like>> getLikes(String token, int postId) => _service.getLikes(token, postId);
 

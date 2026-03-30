@@ -91,20 +91,21 @@ class PostService {
     }
   }
 
-  Future<List<Post>> getUserPosts(String token, String login, {int page = 1}) async {
-    final uri = Uri.parse('$baseUrl/users/$login/posts')
-        .replace(queryParameters: {'page': '$page'});
+Future<List<Post>> getUserPosts(String token, String login) async {
+  final uri = Uri.parse('$baseUrl/users/$login/posts');
 
-    final response = await http.get(uri, headers: _headers(token));
-    print('>>> [getUserPosts] Status: ${response.statusCode}');
+  print('>>> [getUserPosts] URL: $uri');
+  final response = await http.get(uri, headers: _headers(token));
+  print('>>> [getUserPosts] Status: ${response.statusCode}');
+  print('>>> [getUserPosts] Body: ${response.body}');
 
-    if (response.statusCode == 200) {
-      List<dynamic> jsonList = jsonDecode(response.body);
-      return jsonList.map((j) => Post.fromJson(j)).toList();
-    } else {
-      throw Exception('Erro ao carregar posts do usuário: ${response.statusCode}');
-    }
+  if (response.statusCode == 200) {
+    List<dynamic> jsonList = jsonDecode(response.body);
+    return jsonList.map((j) => Post.fromJson(j)).toList();
+  } else {
+    throw Exception('Erro ao carregar posts do usuário: ${response.statusCode}');
   }
+}
 
   Future<List<Like>> getLikes(String token, int postId) async {
     final response = await http.get(
