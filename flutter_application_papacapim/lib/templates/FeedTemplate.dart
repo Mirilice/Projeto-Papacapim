@@ -12,7 +12,6 @@ import 'package:flutter_application_1/templates/UserTemplate.dart';
 
 class FeedTemplate extends StatefulWidget {
   final UserSession session;
-
   const FeedTemplate({super.key, required this.session});
 
   @override
@@ -32,11 +31,13 @@ class _FeedTemplateState extends State<FeedTemplate> {
   bool _isLoadingMore = false;
   bool _isFocused = false;
 
-  bool _isSearchingUser = false;
+  // resultado de busca
+  bool _isSearching = false;
+  List<Post> _postsBusca = [];
   UpdateUser? _usuarioEncontrado;
   String? _erroBusca;
+  bool _isLoadingBusca = false;
 
-  String _searchQuery = '';
   int _currentPage = 1;
   bool _hasMore = true;
 
@@ -71,22 +72,12 @@ class _FeedTemplateState extends State<FeedTemplate> {
         _isLoading = true;
       });
     }
-
     try {
-      final novos = await _postRepository.getPosts(
-        widget.session.token,
-        page: _currentPage,
-        search: _searchQuery,
-      );
+      final novos = await _postRepository.getPosts(widget.session.token, page: _currentPage);
       setState(() {
-        if (reset) {
-          _posts = novos;
-        } else {
-          _posts.addAll(novos);
-        }
+        _posts.addAll(novos);
         _hasMore = novos.isNotEmpty;
       });
-      print('>>> Feed carregado: ${novos.length} posts (página $_currentPage)');
     } catch (e) {
       debugPrint('Erro ao carregar feed: $e');
     } finally {
@@ -95,7 +86,7 @@ class _FeedTemplateState extends State<FeedTemplate> {
   }
 
   Future<void> _carregarMais() async {
-    if (_isLoadingMore || !_hasMore) return;
+    if (_isLoadingMore || !_hasMore || _isSearching) return;
     setState(() {
       _isLoadingMore = true;
       _currentPage++;
@@ -105,53 +96,65 @@ class _FeedTemplateState extends State<FeedTemplate> {
   }
 
   Future<void> _atualizarFeed() async {
-    setState(() => _searchQuery = '');
-    _searchController.clear();
+    _limparBusca();
     await _carregarPosts(reset: true);
   }
 
-  void _buscarUsuario(String login) async {
-    if (login.trim().isEmpty) {
-      setState(() {
-        _isSearchingUser = false;
-        _usuarioEncontrado = null;
-        _erroBusca = null;
-      });
-      return;
-    }
-    if (login.startsWith('#')) {
-      final query = login.replaceFirst('#', '').trim();
-      setState(() {
-        _searchQuery = query;
-        _isSearchingUser = false;
-      });
-      _carregarPosts(reset: true);
+  // Busca: tenta usuário primeiro, depois posts
+  Future<void> _realizarBusca(String query) async {
+    if (query.trim().isEmpty) {
+      _limparBusca();
       return;
     }
 
     setState(() {
-      _isSearchingUser = true;
+      _isSearching = true;
+      _isLoadingBusca = true;
       _usuarioEncontrado = null;
+      _postsBusca = [];
       _erroBusca = null;
     });
 
+    // Tenta buscar usuário
     try {
-      final user = await _userRepository.getUserProfile(login.trim(), widget.session.token);
-      setState(() => _usuarioEncontrado = user);
+      final user = await _userRepository.getUserProfile(query.trim(), widget.session.token);
+      setState(() {
+        _usuarioEncontrado = user;
+        _isLoadingBusca = false;
+      });
+      return;
+    } catch (_) {
+      // não encontrou usuário, tenta buscar posts
+    }
+
+    // Busca posts pelo termo
+    try {
+      final posts = await _postRepository.getPosts(
+        widget.session.token,
+        search: query.trim(),
+      );
+      setState(() {
+        _postsBusca = posts;
+        _isLoadingBusca = false;
+        if (posts.isEmpty) _erroBusca = 'Nenhum resultado para "$query".';
+      });
     } catch (e) {
-      setState(() => _erroBusca = 'Usuário "$login" não encontrado.');
+      setState(() {
+        _erroBusca = 'Erro ao buscar.';
+        _isLoadingBusca = false;
+      });
     }
   }
 
   void _limparBusca() {
     _searchController.clear();
     setState(() {
-      _isSearchingUser = false;
+      _isSearching = false;
       _usuarioEncontrado = null;
+      _postsBusca = [];
       _erroBusca = null;
-      _searchQuery = '';
+      _isLoadingBusca = false;
     });
-    _carregarPosts(reset: true);
   }
 
   @override
@@ -187,14 +190,14 @@ class _FeedTemplateState extends State<FeedTemplate> {
                       : TextAlign.center,
                   textAlignVertical: TextAlignVertical.center,
                   textInputAction: TextInputAction.search,
-                  onSubmitted: _buscarUsuario,
+                  onSubmitted: _realizarBusca,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 20),
-                    hintText: 'Buscar usuário ou #post',
+                    hintText: 'Buscar usuário ou post',
                     hintStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
-                    suffixIcon: _isFocused || _searchController.text.isNotEmpty
+                    suffixIcon: _isSearching || _searchController.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear, color: Colors.grey, size: 20),
                             onPressed: _limparBusca,
@@ -217,7 +220,7 @@ class _FeedTemplateState extends State<FeedTemplate> {
           ],
         ),
       ),
-      body: _isSearchingUser ? _buildResultadoUsuario() : _buildFeed(),
+      body: _isSearching ? _buildResultadoBusca() : _buildFeed(),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
         backgroundColor: Colors.blue,
@@ -234,23 +237,11 @@ class _FeedTemplateState extends State<FeedTemplate> {
   }
 
   Widget _buildFeed() {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    if (_isLoading) return const Center(child: CircularProgressIndicator());
 
     if (_posts.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.article_outlined, size: 60, color: Colors.grey),
-            const SizedBox(height: 12),
-            Text(
-              _searchQuery.isNotEmpty ? 'Nenhum post encontrado para "$_searchQuery".' : 'Nenhum post ainda.',
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
+      return const Center(
+        child: Text('Nenhum post ainda.', style: TextStyle(color: Colors.grey)),
       );
     }
 
@@ -269,20 +260,21 @@ class _FeedTemplateState extends State<FeedTemplate> {
           return PostCard(
             post: _posts[i],
             session: widget.session,
-            onDeleted: () {
-              setState(() => _posts.removeAt(i));
-            },
+            onDeleted: () => setState(() => _posts.removeAt(i)),
           );
         },
       ),
     );
   }
 
-  Widget _buildResultadoUsuario() {
+  Widget _buildResultadoBusca() {
+    if (_isLoadingBusca) return const Center(child: CircularProgressIndicator());
+
     if (_erroBusca != null) {
       return Center(child: Text(_erroBusca!, style: const TextStyle(color: Colors.grey)));
     }
 
+    // Resultado de usuário
     if (_usuarioEncontrado != null) {
       return ListView(
         children: [
@@ -307,6 +299,18 @@ class _FeedTemplateState extends State<FeedTemplate> {
       );
     }
 
-    return const Center(child: CircularProgressIndicator());
+    // Resultado de posts
+    if (_postsBusca.isNotEmpty) {
+      return ListView.builder(
+        itemCount: _postsBusca.length,
+        itemBuilder: (ctx, i) => PostCard(
+          post: _postsBusca[i],
+          session: widget.session,
+          onDeleted: () => setState(() => _postsBusca.removeAt(i)),
+        ),
+      );
+    }
+
+    return const SizedBox();
   }
 }
