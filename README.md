@@ -46,7 +46,7 @@ Antes de começar, certifique-se de que sua máquina atende aos requisitos abaix
 
 ## 📂 Estrutura Principal de Pastas
 
-A estrutura do código-fonte da aplicação está concentrada na pasta `lib/` e foi organizada da seguinte maneira para focar em componentes reutilizáveis, separação de responsabilidades e escalabilidade:
+A estrutura do código-fonte da aplicação está concentrada na pasta `flutter_application_papacapim/lib/` (isto é, dentro da pasta do aplicativo Flutter) e foi organizada da seguinte maneira para focar em componentes reutilizáveis, separação de responsabilidades e escalabilidade:
 
 - **`components/`**: Contém os widgets visuais e elementos de interface menores e reutilizáveis por todo o aplicativo (ex: `MyButton.dart`, `MyInput.dart`, `MyPost.dart`).
 - **`models/`**: Guarda os modelos de dados e entidades da aplicação que trafegam entre as camadas (ex: `CreateUser.dart`, `UserSession.dart`).
