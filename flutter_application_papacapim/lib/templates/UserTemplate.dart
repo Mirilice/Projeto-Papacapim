@@ -115,17 +115,17 @@ class _UserTemplateState extends State<UserTemplate> {
           _isFollowing = false;
           _followRelationId = null;
         });
-        print('✅ Deixou de seguir $targetLogin');
+        print('Deixou de seguir $targetLogin');
       } else {
         final relation = await _followerRepository.followUser(targetLogin, token);
         setState(() {
           _isFollowing = true;
           _followRelationId = relation?.id;
         });
-        print('✅ Seguindo $targetLogin | relationId: ${relation?.id}');
+        print('Seguindo $targetLogin | relationId: ${relation?.id}');
       }
     } catch (e) {
-      print('❌ [_toggleFollow] Erro: $e');
+      print('[_toggleFollow] Erro: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Erro: $e")),
       );
@@ -134,6 +134,15 @@ class _UserTemplateState extends State<UserTemplate> {
     }
   }
 
+String _getAnoIngresso() {
+  final createdAt = widget.searchedUser?.createdAt ?? widget.session.created_at;
+  if (createdAt.isEmpty) return '2026';
+  try {
+    return DateTime.parse(createdAt).year.toString();
+  } catch (_) {
+    return '2026';
+  }
+}
   @override
   Widget build(BuildContext context) {
     final String username = widget.searchedUser?.name ?? widget.session.login; 
@@ -226,7 +235,10 @@ class _UserTemplateState extends State<UserTemplate> {
                     children: [
                       const Icon(Icons.calendar_month, size: 16, color: Colors.grey),
                       const SizedBox(width: 4),
-                      Text("Ingressou em 2024", style: TextStyle(color: Colors.grey[600])),
+                      Text(
+                        "Ingressou em ${_getAnoIngresso()}",
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
