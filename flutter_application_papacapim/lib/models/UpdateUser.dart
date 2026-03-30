@@ -1,12 +1,14 @@
 class UpdateUser {
+  int? id;
   String? login;
   String? name;
   String? password;
   String? createdAt; 
 
-  UpdateUser({this.login, this.name, this.password, this.createdAt});
+  UpdateUser({this.id, this.login, this.name, this.password, this.createdAt});
 
   factory UpdateUser.fromJson(Map<String, dynamic> json) => UpdateUser(
+    id: json['id'], 
     login: json['login'],
     name: json['name'],
     password: null,

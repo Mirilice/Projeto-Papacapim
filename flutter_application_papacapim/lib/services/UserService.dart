@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class UserService {
   final http.Client _client = http.Client();
-  final String _baseUrl = "http://api.papacapim.just.pro.br";
+  final String _baseUrl = 'http://api.papacapim.just.pro.br';
 
   Future<UserSession> createUser(CreateUser post) async { 
   try {
@@ -60,10 +60,11 @@ class UserService {
         },
         body:json.encode(updateData.toJson())
       );
-      if(res.statusCode == 200 || res.statusCode == 201){
+      if (res.statusCode == 200 || res.statusCode == 201) {
         return UpdateUser.fromJson(json.decode(res.body));
-      }else{
-        throw Exception("Erro na API: ${res.statusCode}: ${res.body}");
+      } else {
+        print("Corpo do erro: ${res.body}"); 
+        throw Exception("Erro ${res.statusCode}: ${res.body}");
       }
       
     }catch(e){

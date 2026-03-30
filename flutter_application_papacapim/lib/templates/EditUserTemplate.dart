@@ -29,6 +29,8 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
   
   String? _hintNomeAtual;
 
+  int? _editingUserId;
+
   @override
   void initState() {
     super.initState();
@@ -55,7 +57,10 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
 
       setState(() {
         _hintNomeAtual = user.name;
+        _editingUserId = user.id ?? widget.session.id; 
       });
+
+      debugPrint('EditUser: session.id=${widget.session.id} / editingUserId=$_editingUserId');
     } catch (e) {
       if (mounted){
         ScaffoldMessenger.of(context).showSnackBar(
@@ -89,8 +94,9 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
     );
 
     try {
+      final targetId = _editingUserId ?? widget.session.id;
       await _repository.userPatch(
-        widget.session.id,
+        targetId,
         newData,
         widget.session.token,
       );
@@ -142,7 +148,8 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
   void _performDelete() async {
     setState(() => _isLoading = true);
     try {
-      final ok = await _repository.deleteUser(widget.session.id, widget.session.token);
+      final targetId = _editingUserId ?? widget.session.id;
+      final ok = await _repository.deleteUser(targetId, widget.session.token);
       if (ok && mounted) {
         Navigator.pushAndRemoveUntil(
           context,
@@ -151,7 +158,7 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Erro: $e")));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Erro: $e")));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
