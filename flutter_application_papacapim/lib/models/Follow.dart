@@ -14,12 +14,16 @@ class Follow {
   });
 
   factory Follow.fromJson(Map<String, dynamic> json) {
-    return Follow(
-      id: json['id'],
-      login: json['login'],
-      name: json['name'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-    );
-  }
+  return Follow(
+    id: json['id'] ?? 0,
+    login: json['login'] ?? '',
+    name: json['name'] ?? '',
+    createdAt: json['created_at'] != null
+        ? DateTime.parse(json['created_at'])
+        : DateTime.now(),
+    updatedAt: json['updated_at'] != null
+        ? DateTime.parse(json['updated_at'])
+        : DateTime.now(),
+  );
+}
 }

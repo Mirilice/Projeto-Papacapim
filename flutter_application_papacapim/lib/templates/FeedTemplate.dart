@@ -149,7 +149,6 @@ class _FeedTemplateState extends State<FeedTemplate> {
           ),
         ),
       ),
-      // A mágica acontece aqui: O feed é substituído pelo resultado
       body: _isSearching ? _buildResultadoBusca() : _buildFeedOriginal(),
       
       floatingActionButton: FloatingActionButton(

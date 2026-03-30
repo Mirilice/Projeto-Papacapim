@@ -44,7 +44,7 @@ class _RegisterTemplateState extends State<RegisterTemplate> {
           backgroundColor: Colors.red,
         ),
       );
-      return; // Interrompe a função aqui e não tenta cadastrar
+      return; 
     }
 
     setState(() => _isLoading = true);

@@ -29,6 +29,7 @@ class _UserTemplateState extends State<UserTemplate> {
   bool _isFollowing = false;
   bool _isMyProfile = false;
   
+  int? _followRelationId;
   int _numeroSeguidores = 0;
   int _numeroSeguindo = 0;
 
@@ -39,58 +40,63 @@ class _UserTemplateState extends State<UserTemplate> {
     _carregarDadosDeFollow();
   }
 
-  Future<void> _carregarDadosDeFollow() async {
-    setState(() => _isLoadingFollowData = true);
-    try {
-      final loginAlvo = _isMyProfile ? widget.session.login : widget.searchedUser!.login!;
-      
-      final followers = await _followerRepository.getFollowers(loginAlvo);
-      final following = await _followerRepository.getFollowing(loginAlvo);
-      
-      bool isFollowing = false;
-      if (!_isMyProfile) {
-        isFollowing = followers.any((follower) => follower.login == widget.session.login);
-      }
-      
-      setState(() {
-        _isFollowing = isFollowing;
-        _numeroSeguidores = followers.length;
-        _numeroSeguindo = following.length;
-      });
-    } catch (e) {
-      debugPrint("Erro ao carregar dados de follow: $e");
-    } finally {
-      setState(() => _isLoadingFollowData = false);
-    }
-  }
+Future<void> _carregarDadosDeFollow() async {
+  setState(() => _isLoadingFollowData = true);
+  try {
+    final loginAlvo = _isMyProfile ? widget.session.login : widget.searchedUser!.login!;
+    final token = widget.session.token;
 
-  Future<void> _toggleFollow() async {
-    setState(() => _isLoadingFollowData = true);
-    try {
-      final targetLogin = widget.searchedUser!.login!;
-      final token = widget.session.token; 
-      
-      if (_isFollowing) {
-        await _followerRepository.unfollowUser(targetLogin, widget.session.id, token);
-        setState(() {
-          _isFollowing = false;
-          _numeroSeguidores--; 
-        });
-      } else {
-        await _followerRepository.followUser(targetLogin, token);
-        setState(() {
-          _isFollowing = true;
-          _numeroSeguidores++;
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Falha ao atualizar seguir/deixar de seguir.")),
-      );
-    } finally {
-      setState(() => _isLoadingFollowData = false);
+    final followers = await _followerRepository.getFollowers(loginAlvo, token);
+
+    bool isFollowing = false;
+    if (!_isMyProfile) {
+      isFollowing = followers.any((f) => f.login == widget.session.login);
     }
+
+    setState(() {
+      _isFollowing = isFollowing;
+      _numeroSeguidores = followers.length;
+    });
+
+    print('>>> Seguidores carregados: $_numeroSeguidores | já segue: $_isFollowing');
+  } catch (e) {
+    debugPrint("Erro ao carregar dados de follow: $e");
+  } finally {
+    setState(() => _isLoadingFollowData = false);
   }
+}
+
+Future<void> _toggleFollow() async {
+  setState(() => _isLoadingFollowData = true);
+  try {
+    final targetLogin = widget.searchedUser!.login!;
+    final token = widget.session.token;
+
+    if (_isFollowing) {
+      final idParaUnfollow = _followRelationId ?? widget.session.id;
+      await _followerRepository.unfollowUser(targetLogin, idParaUnfollow, token);
+      setState(() {
+        _isFollowing = false;
+        _followRelationId = null;
+      });
+      print('✅ Deixou de seguir $targetLogin');
+    } else {
+      final relation = await _followerRepository.followUser(targetLogin, token);
+      setState(() {
+        _isFollowing = true;
+        _followRelationId = relation?.id;
+      });
+      print('✅ Seguindo $targetLogin | relationId: ${relation?.id}');
+    }
+  } catch (e) {
+    print('❌ [_toggleFollow] Erro: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Erro: $e")),
+    );
+  } finally {
+    setState(() => _isLoadingFollowData = false);
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -190,9 +196,11 @@ class _UserTemplateState extends State<UserTemplate> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Text("$_numeroSeguindo ", style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text("Seguindo", style: TextStyle(color: Colors.grey[600])),
-                      const SizedBox(width: 15),
+                      if (_numeroSeguindo > 0) ...[
+                        Text("$_numeroSeguindo ", style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text("Seguindo", style: TextStyle(color: Colors.grey[600])),
+                        const SizedBox(width: 15),
+                      ],
                       Text("$_numeroSeguidores ", style: const TextStyle(fontWeight: FontWeight.bold)),
                       Text("Seguidores", style: TextStyle(color: Colors.grey[600])),
                     ],

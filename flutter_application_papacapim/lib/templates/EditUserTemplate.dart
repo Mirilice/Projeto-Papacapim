@@ -193,7 +193,7 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
                   child: CircleAvatar(
                     radius: 40,
                     backgroundColor: Colors.grey[300],
-                    // backgroundImage: const AssetImage('img/logo.png'), // Descomente se tiver a imagem
+                    backgroundImage: const AssetImage('img/logo.png'), 
                     child: const Icon(Icons.camera_enhance, color: Colors.white70),
                   ),
                 ),
