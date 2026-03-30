@@ -145,7 +145,7 @@ String _getAnoIngresso() {
 }
   @override
   Widget build(BuildContext context) {
-    final String username = widget.searchedUser?.name ?? widget.session.login; 
+    final String username = widget.searchedUser?.name ?? widget.session.name; 
     final String handle = widget.searchedUser?.login ?? widget.session.login;
 
     return Scaffold(

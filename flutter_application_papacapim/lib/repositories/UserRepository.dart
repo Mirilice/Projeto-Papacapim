@@ -10,15 +10,26 @@ class UserRepository {
 
   Future<UserSession> createUser(CreateUser user) async => _apiService.createUser(user);
 
-  Future<UserSession> userLogin(String login, String password) async{
-    try{
-      UserSession session = await _apiService.userLogin(login,password);
+Future<UserSession> userLogin(String login, String password) async {
+  try {
+    UserSession session = await _apiService.userLogin(login, password);
 
-      return session;
-    }catch(e){
-      rethrow;
-    }
+    final profile = await _apiService.getUserByLogin(session.login, session.token);
+
+    return UserSession(
+      id: session.id,
+      login: session.login,
+      name: profile.name ?? session.login, 
+      token: session.token,
+      ip: session.ip,
+      created_at: session.created_at,
+      updated_at: session.updated_at,
+      password: '',
+    );
+  } catch (e) {
+    rethrow;
   }
+}
 
   Future<UpdateUser> getUserByLogin(String login, String token) => _apiService.getUserByLogin(login, token);
 
