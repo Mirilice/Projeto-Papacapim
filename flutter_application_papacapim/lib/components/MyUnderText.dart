@@ -12,8 +12,8 @@ class MyUnderText extends StatelessWidget{
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
-        onTap:(){
-          Navigator.push(
+        onTap: () {
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => page),
           );

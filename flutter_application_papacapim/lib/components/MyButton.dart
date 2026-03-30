@@ -21,12 +21,13 @@ class MyButton extends StatelessWidget{
             : () {
               if (onPressed != null){
                 onPressed!();
-              }else if (page != null){
-              Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => page!),
-              );
-            }
+              } else if (page != null) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => page!),
+                  (route) => false, 
+                );
+              }
             },
           style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 154, 143, 216),
