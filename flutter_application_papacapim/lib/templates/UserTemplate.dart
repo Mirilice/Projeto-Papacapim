@@ -189,10 +189,18 @@ String _getAnoIngresso() {
                 padding: const EdgeInsets.all(12.0),
                 child: _isMyProfile
                   ? OutlinedButton(
-                      onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditUserTemplate(session: widget.session))),
+                      onPressed: () async {
+                        final result = await Navigator.push<Map<String, dynamic>>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditUserTemplate(session: widget.session),
+                        ),
+                      );
+                      if (result != null) {
+                        setState(() {}); // reconstrói a tela
+                        _carregarPostsDoUsuario(); // recarrega posts se login mudou
+                      }
+                    },
                       style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
                       child: const Text("Editar perfil"),
                     )

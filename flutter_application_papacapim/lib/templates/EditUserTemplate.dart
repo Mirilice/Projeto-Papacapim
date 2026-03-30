@@ -114,7 +114,10 @@ class _EditUserTemplateState extends State<EditUserTemplate> {
           (route) => false,
         );
       } else {
-        Navigator.pop(context);
+        Navigator.pop(context, {
+          'login': _loginController.text.isNotEmpty ? _loginController.text : widget.session.login,
+          'name': _nameController.text.isNotEmpty ? _nameController.text : _hintNomeAtual,
+        });
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
