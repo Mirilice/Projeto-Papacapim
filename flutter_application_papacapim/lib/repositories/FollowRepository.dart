@@ -11,7 +11,7 @@ class FollowRepository {
 
   Future<List<Follow>> getFollowing(String login, String token) => _service.getFollowing(login, token);
   
-  Future<FollowRelation?> followUser(String login, String token) => _service.followUser(login, token); 
+  Future<FollowRelation?> followUser(String login, String token) => _service.followUser(login, token);
 
   Future<void> unfollowUser(String login, int followRelationId, String token) => _service.unfollowUser(login, followRelationId, token);
 }

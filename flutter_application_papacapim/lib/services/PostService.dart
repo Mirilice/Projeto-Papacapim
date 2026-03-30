@@ -4,7 +4,7 @@ import 'package:flutter_application_1/models/Post.dart';
 import 'package:flutter_application_1/models/Like.dart';
 
 class PostService {
-  final String baseUrl = 'https://api.papacapim.just.pro.br';
+  final String baseUrl = 'http://api.papacapim.just.pro.br';
 
   Map<String, String> _headers(String token) => {
         'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ class PostService {
     print('>>> [likePost] Status: ${response.statusCode} | Body: ${response.body}');
 
     if (response.statusCode == 201) {
-      print('✅ [likePost] Curtido com sucesso!');
+      print('[likePost] Curtido com sucesso!');
       final data = jsonDecode(response.body);
       return data['id'];
     } else {

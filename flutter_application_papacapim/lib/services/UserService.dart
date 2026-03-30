@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class UserService {
   final http.Client _client = http.Client();
-  final String _baseUrl = "https://api.papacapim.just.pro.br";
+  final String _baseUrl = "http://api.papacapim.just.pro.br";
 
   Future<UserSession> createUser(CreateUser post) async { 
   try {
