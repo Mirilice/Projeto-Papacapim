@@ -20,6 +20,8 @@ class UserRepository {
     }
   }
 
+  Future<UpdateUser> getUserByLogin(String login, String token) => _apiService.getUserByLogin(login, token);
+
   Future<UpdateUser> getUserProfile(String login, String token) async {
     try {
       return await _apiService.getUserByLogin(login, token);

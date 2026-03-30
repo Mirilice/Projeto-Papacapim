@@ -83,9 +83,10 @@ class UserService {
 
     if (res.statusCode == 200) {
       return UpdateUser.fromJson(json.decode(res.body));
-    } else {
-      print("${res.statusCode} - ${res.body}");
-      throw Exception("Usuário não encontrado: ${res.statusCode}");
+    } else if (res.statusCode == 404){
+      throw Exception("Usuário não encontrado");
+    }else{
+      throw Exception('Erro ao buscar usuário');
     }
   } catch (e) {
     return Future.error(e);

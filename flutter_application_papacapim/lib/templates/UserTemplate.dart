@@ -1,20 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/MyPostUser.dart';
+import 'package:flutter_application_1/components/MyButton.dart'; 
 import 'package:flutter_application_1/models/UserSession.dart';
+import 'package:flutter_application_1/models/UpdateUser.dart';
+import 'package:flutter_application_1/repositories/FollowRepository.dart';
+import 'package:flutter_application_1/services/FollowService.dart';
 import 'package:flutter_application_1/templates/EditUserTemplate.dart';
 import 'package:flutter_application_1/templates/NewPostTemplate.dart';
 
-class UserTemplate extends StatelessWidget {
-  static const String myUsername = "Maria Alice";
-  static const String myHandle = "malice_dev";
-  static const String myBio = "Pode passar que o cachorro tá amarrado";
-  static const int myYear = 2025;
-
+class UserTemplate extends StatefulWidget {
   final UserSession session;
-  const UserTemplate({super.key, required this.session});
+  final UpdateUser? searchedUser; 
+
+  const UserTemplate({
+    super.key, 
+    required this.session, 
+    this.searchedUser,
+  });
+
+  @override
+  State<UserTemplate> createState() => _UserTemplateState();
+}
+
+class _UserTemplateState extends State<UserTemplate> {
+  final _followerRepository = FollowRepository(FollowService());
+
+  bool _isLoadingFollowData = false;
+  bool _isFollowing = false;
+  bool _isMyProfile = false;
+  
+  int _numeroSeguidores = 0;
+  int _numeroSeguindo = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _isMyProfile = widget.searchedUser == null || widget.searchedUser!.login == widget.session.login;
+    _carregarDadosDeFollow();
+  }
+
+  Future<void> _carregarDadosDeFollow() async {
+    setState(() => _isLoadingFollowData = true);
+    try {
+      final loginAlvo = _isMyProfile ? widget.session.login : widget.searchedUser!.login!;
+      
+      final followers = await _followerRepository.getFollowers(loginAlvo);
+      final following = await _followerRepository.getFollowing(loginAlvo);
+      
+      bool isFollowing = false;
+      if (!_isMyProfile) {
+        isFollowing = followers.any((follower) => follower.login == widget.session.login);
+      }
+      
+      setState(() {
+        _isFollowing = isFollowing;
+        _numeroSeguidores = followers.length;
+        _numeroSeguindo = following.length;
+      });
+    } catch (e) {
+      debugPrint("Erro ao carregar dados de follow: $e");
+    } finally {
+      setState(() => _isLoadingFollowData = false);
+    }
+  }
+
+  Future<void> _toggleFollow() async {
+    setState(() => _isLoadingFollowData = true);
+    try {
+      final targetLogin = widget.searchedUser!.login!;
+      final token = widget.session.token; 
+      
+      if (_isFollowing) {
+        await _followerRepository.unfollowUser(targetLogin, widget.session.id, token);
+        setState(() {
+          _isFollowing = false;
+          _numeroSeguidores--; 
+        });
+      } else {
+        await _followerRepository.followUser(targetLogin, token);
+        setState(() {
+          _isFollowing = true;
+          _numeroSeguidores++;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Falha ao atualizar seguir/deixar de seguir.")),
+      );
+    } finally {
+      setState(() => _isLoadingFollowData = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final String username = widget.searchedUser?.name ?? 'Meu Nome (Sessão)'; 
+    final String handle = widget.searchedUser?.login ?? widget.session.login;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Perfil"),
@@ -49,46 +131,70 @@ class UserTemplate extends StatelessWidget {
                 ),
               ],
             ),
+            
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: OutlinedButton(
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditUserTemplate(session: session))),
-                  style: OutlinedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                  ),
-                  child: const Text("Editar perfil"),
-                ),
+                child: _isMyProfile
+                  ? OutlinedButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditUserTemplate(session: widget.session))),
+                      style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
+                      child: const Text("Editar perfil"),
+                    )
+                  : _isLoadingFollowData 
+                    ? const Padding(
+                        padding: EdgeInsets.only(right: 20, top: 10),
+                        child: SizedBox(
+                          width: 20, height: 20, 
+                          child: CircularProgressIndicator(strokeWidth: 2)
+                        ),
+                      )
+                    : SizedBox(
+                        width: 150, 
+                        height: 40,
+                        child: MyButton(
+                          text: _isFollowing ? "Seguindo" : "Seguir",
+                          onPressed: _toggleFollow,
+                        ),
+                      ),
               ),
             ),
+            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    myUsername,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  Text(
+                    username,
+                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "@$myHandle",
+                    "@$handle",
                     style: TextStyle(color: Colors.grey[600], fontSize: 16),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    myBio,
-                  ),
+                  const Text("Papacapim é top demais!!!"),
                   const SizedBox(height: 12),
                   Row(
                     children: [
                       const Icon(Icons.calendar_month, size: 16, color: Colors.grey),
                       const SizedBox(width: 4),
-                      Text("Ingressou em $myYear",
-                          style: TextStyle(color: Colors.grey[600])),
+                      Text("Ingressou em 2024", style: TextStyle(color: Colors.grey[600])),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Text("$_numeroSeguindo ", style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Seguindo", style: TextStyle(color: Colors.grey[600])),
+                      const SizedBox(width: 15),
+                      Text("$_numeroSeguidores ", style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Seguidores", style: TextStyle(color: Colors.grey[600])),
                     ],
                   ),
                 ],
@@ -97,8 +203,8 @@ class UserTemplate extends StatelessWidget {
             const SizedBox(height: 20),
             const Divider(thickness: 0.5),
             MyPostUser(
-              username: myUsername,
-              handle: myHandle,
+              username: username,
+              handle: handle,
               profileImg: 'img/logo.png',
               time: 2,
               comments: 3,
@@ -107,8 +213,8 @@ class UserTemplate extends StatelessWidget {
               content: "Desenvolvendo um projeto ESG incrível com IFBA e Nubank! 🚀",
             ),
             MyPostUser(
-              username: myUsername,
-              handle: myHandle,
+              username: username,
+              handle: handle,
               profileImg: 'img/logo.png',
               time: 2,
               comments: 3,
@@ -124,7 +230,7 @@ class UserTemplate extends StatelessWidget {
         backgroundColor: Colors.blue,
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => NewPostTemplate(session: session)),
+          MaterialPageRoute(builder: (context) => NewPostTemplate(session: widget.session)),
         ),
         child: const Text('+', style: TextStyle(color: Colors.white, fontSize: 24)),
       ),
