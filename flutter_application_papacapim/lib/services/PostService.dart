@@ -4,7 +4,7 @@ import 'package:flutter_application_1/models/Post.dart';
 import 'package:flutter_application_1/models/Like.dart';
 
 class PostService {
-  final String baseUrl = 'http://api.papacapim.just.pro.br';
+  final String baseUrl = 'https://api.papacapim.just.pro.br';
 
   Map<String, String> _headers(String token) => {
         'Content-Type': 'application/json',

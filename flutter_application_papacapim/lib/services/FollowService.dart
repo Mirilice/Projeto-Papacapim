@@ -4,7 +4,7 @@ import 'package:flutter_application_1/models/Follow.dart';
 import 'package:flutter_application_1/models/FollowRelation.dart';
 
 class FollowService {
-  final String baseUrl = 'http://api.papacapim.just.pro.br';
+  final String baseUrl = 'https://api.papacapim.just.pro.br';
 
   Future<List<Follow>> getFollowers(String login, String token) async {
     final response = await http.get(
