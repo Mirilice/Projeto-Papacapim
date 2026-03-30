@@ -1,10 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/components/MyButton.dart';
 import 'package:flutter_application_1/models/UserSession.dart';
+import 'package:flutter_application_1/repositories/PostRepository.dart';
+import 'package:flutter_application_1/services/PostService.dart';
 
-class NewPostTemplate extends StatelessWidget {
+class NewPostTemplate extends StatefulWidget {
   final UserSession session;
-  const NewPostTemplate ({super.key, required this.session});
+
+  const NewPostTemplate({super.key, required this.session});
+
+  @override
+  State<NewPostTemplate> createState() => _NewPostTemplateState();
+}
+
+class _NewPostTemplateState extends State<NewPostTemplate> {
+  final _postRepository = PostRepository(PostService());
+  final _controller = TextEditingController();
+  bool _isPosting = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _postar() async {
+    final texto = _controller.text.trim();
+    if (texto.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Escreva algo antes de postar!')),
+      );
+      return;
+    }
+
+    setState(() => _isPosting = true);
+    try {
+      await _postRepository.createPost(widget.session.token, texto);
+      print('Post criado com sucesso!');
+      if (mounted) Navigator.pop(context, true); // true = sinaliza que postou
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao postar: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _isPosting = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +58,20 @@ class NewPostTemplate extends StatelessWidget {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Center(
-              child: SizedBox(
-                width: 90,
-                height: 45,
-                child: MyButton(
-                  text: "Postar",
-                ),
-              ),
-            ),
+            padding: const EdgeInsets.only(right: 8.0, top: 8, bottom: 8),
+            child: _isPosting
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                  )
+                : ElevatedButton(
+                    onPressed: _postar,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: const StadiumBorder(),
+                    ),
+                    child: const Text('Postar', style: TextStyle(color: Colors.white)),
+                  ),
           ),
         ],
       ),
@@ -42,12 +86,14 @@ class NewPostTemplate extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: TextFormField(
-                autofocus: true, 
+              child: TextField(
+                controller: _controller,
+                autofocus: true,
                 keyboardType: TextInputType.multiline,
+                maxLines: null,
                 decoration: const InputDecoration(
-                  hintText: "O que está acontecendo?",
-                  border: InputBorder.none, 
+                  hintText: 'O que está acontecendo?',
+                  border: InputBorder.none,
                 ),
                 style: const TextStyle(fontSize: 18),
               ),
@@ -58,6 +104,3 @@ class NewPostTemplate extends StatelessWidget {
     );
   }
 }
-
-
-  
