@@ -145,8 +145,8 @@ String _getAnoIngresso() {
 }
   @override
   Widget build(BuildContext context) {
-    final String username = widget.searchedUser?.name ?? widget.session.name; 
-    final String handle = widget.searchedUser?.login ?? widget.session.login;
+    final String username = _isMyProfile ? widget.session.name : (widget.searchedUser?.name ?? '');
+    final String handle = _isMyProfile ? widget.session.login : (widget.searchedUser?.login ?? '');
 
     return Scaffold(
       appBar: AppBar(
@@ -191,16 +191,20 @@ String _getAnoIngresso() {
                   ? OutlinedButton(
                       onPressed: () async {
                         final result = await Navigator.push<Map<String, dynamic>>(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditUserTemplate(session: widget.session),
-                        ),
-                      );
-                      if (result != null) {
-                        setState(() {}); // reconstrói a tela
-                        _carregarPostsDoUsuario(); // recarrega posts se login mudou
-                      }
-                    },
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditUserTemplate(session: widget.session),
+                          ),
+                        );
+
+                        if (result != null) {
+                          setState(() {
+                            widget.session.name = result['name'] ?? widget.session.name;
+                            widget.session.login = result['login'] ?? widget.session.login;
+                          });
+                          _carregarPostsDoUsuario(); 
+                        }
+                      },
                       style: OutlinedButton.styleFrom(shape: const StadiumBorder()),
                       child: const Text("Editar perfil"),
                     )

@@ -1,12 +1,12 @@
 class UserSession {
   final int id;
-  final String login;
-  final String name;
+  String login;
+  String name;
   final String token;
   final String ip;
   final String created_at;
-  final String updated_at;
-  final String password;
+  String updated_at;
+  String password;
 
   UserSession({
     required this.id,
