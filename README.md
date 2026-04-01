@@ -26,40 +26,41 @@ O projeto segue uma arquitetura em camadas:
 - **Models** — representação dos dados
 
 ## 📁 Estrutura de Pastas
-
+```
 lib/
-├── main.dart
-├── components/
-│   ├── MyButton.dart
-│   ├── MyInput.dart
-│   ├── MyText.dart
-│   ├── MyTitle.dart
-│   ├── MyUnderText.dart
-│   └── PostCard.dart
-├── models/
-│   ├── CreateUser.dart
-│   ├── Follow.dart
-│   ├── FollowRelation.dart
-│   ├── Like.dart
-│   ├── Post.dart
-│   ├── UpdateUser.dart
-│   └── UserSession.dart
-├── repositories/
-│   ├── FollowRepository.dart
-│   ├── PostRepository.dart
-│   └── UserRepository.dart
-├── services/
-│   ├── FollowService.dart
-│   ├── PostService.dart
-│   └── UserService.dart
-└── templates/
-    ├── EditUserTemplate.dart
-    ├── FeedTemplate.dart
-    ├── LoginTemplate.dart
-    ├── NewPostTemplate.dart
-    ├── PostDetailTemplate.dart
-    ├── RegisterTemplate.dart
-    └── UserTemplate.dart
+  main.dart
+  components/
+    MyButton.dart
+    MyInput.dart
+    MyText.dart
+    MyTitle.dart
+    MyUnderText.dart
+    PostCard.dart
+  models/
+    CreateUser.dart
+    Follow.dart
+    FollowRelation.dart
+    Like.dart
+    Post.dart
+    UpdateUser.dart
+    UserSession.dart
+  repositories/
+    FollowRepository.dart
+    PostRepository.dart
+    UserRepository.dart
+  services/
+    FollowService.dart
+    PostService.dart
+    UserService.dart
+  templates/
+    EditUserTemplate.dart
+    FeedTemplate.dart
+    LoginTemplate.dart
+    NewPostTemplate.dart
+    PostDetailTemplate.dart
+    RegisterTemplate.dart
+    UserTemplate.dart
+```
 
 ## 🛠️ Tecnologias
 
