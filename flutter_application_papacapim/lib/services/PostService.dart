@@ -18,7 +18,6 @@ class PostService {
     });
 
     final response = await http.get(uri, headers: _headers(token));
-    print('>>> [getPosts] Status: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       List<dynamic> jsonList = jsonDecode(response.body);
@@ -34,10 +33,8 @@ class PostService {
       headers: _headers(token),
       body: jsonEncode({'post': {'message': message}}),
     );
-    print('>>> [createPost] Status: ${response.statusCode} | Body: ${response.body}');
 
     if (response.statusCode == 201) {
-      print('[createPost] Post criado com sucesso!');
       return Post.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Erro ao criar post: ${response.statusCode}');
@@ -51,10 +48,8 @@ class PostService {
       headers: _headers(token),
       body: jsonEncode({'reply': {'message': message}}),
     );
-    print('>>> [replyPost] Status: ${response.statusCode} | Body: ${response.body}');
 
     if (response.statusCode == 201) {
-      print('[replyPost] Resposta enviada com sucesso!');
       return Post.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Erro ao responder post: ${response.statusCode}');
@@ -66,7 +61,6 @@ class PostService {
       Uri.parse('$baseUrl/posts/$postId/replies'),
       headers: _headers(token),
     );
-    print('>>> [getReplies] Status: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       List<dynamic> jsonList = jsonDecode(response.body);
@@ -82,10 +76,8 @@ class PostService {
       Uri.parse('$baseUrl/posts/$postId'),
       headers: _headers(token),
     );
-    print('>>> [deletePost] Status: ${response.statusCode}');
 
     if (response.statusCode == 204) {
-      print('[deletePost] Post deletado com sucesso!');
     } else {
       throw Exception('Erro ao deletar post: ${response.statusCode}');
     }
@@ -93,11 +85,7 @@ class PostService {
 
 Future<List<Post>> getUserPosts(String token, String login) async {
   final uri = Uri.parse('$baseUrl/users/$login/posts');
-
-  print('>>> [getUserPosts] URL: $uri');
   final response = await http.get(uri, headers: _headers(token));
-  print('>>> [getUserPosts] Status: ${response.statusCode}');
-  print('>>> [getUserPosts] Body: ${response.body}');
 
   if (response.statusCode == 200) {
     List<dynamic> jsonList = jsonDecode(response.body);
@@ -112,7 +100,6 @@ Future<List<Post>> getUserPosts(String token, String login) async {
       Uri.parse('$baseUrl/posts/$postId/likes'),
       headers: _headers(token),
     );
-    print('>>> [getLikes] Status: ${response.statusCode}');
 
     if (response.statusCode == 200) {
       List<dynamic> jsonList = jsonDecode(response.body);
@@ -127,10 +114,8 @@ Future<List<Post>> getUserPosts(String token, String login) async {
       Uri.parse('$baseUrl/posts/$postId/likes'),
       headers: _headers(token),
     );
-    print('>>> [likePost] Status: ${response.statusCode} | Body: ${response.body}');
 
     if (response.statusCode == 201) {
-      print('[likePost] Curtido com sucesso!');
       final data = jsonDecode(response.body);
       return data['id'];
     } else {
@@ -143,10 +128,8 @@ Future<List<Post>> getUserPosts(String token, String login) async {
       Uri.parse('$baseUrl/posts/$postId/likes/$likeId'),
       headers: _headers(token),
     );
-    print('>>> [unlikePost] Status: ${response.statusCode}');
 
     if (response.statusCode == 204) {
-      print('[unlikePost] Descurtido com sucesso!');
     } else {
       throw Exception('Erro ao descurtir: ${response.statusCode}');
     }

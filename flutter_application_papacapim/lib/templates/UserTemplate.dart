@@ -80,7 +80,6 @@ class _UserTemplateState extends State<UserTemplate> {
       final login = _isMyProfile ? widget.session.login : widget.searchedUser!.login!;
       final posts = await _postRepository.getUserPosts(widget.session.token, login);
       setState(() => _userPosts = posts);
-      print('>>> Posts carregados: ${posts.length}');
     } catch (e) {
       debugPrint("Erro ao carregar posts: $e");
     } finally {

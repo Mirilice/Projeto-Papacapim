@@ -74,7 +74,6 @@ class _PostDetailTemplateState extends State<PostDetailTemplate> {
       _replyController.clear();
       _focusNode.unfocus();
       setState(() => _replies.insert(0, novaResposta));
-      print('Resposta enviada com sucesso!');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao responder: $e')),

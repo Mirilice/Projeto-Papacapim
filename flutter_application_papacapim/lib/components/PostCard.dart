@@ -96,7 +96,6 @@ class _PostCardState extends State<PostCard> {
 
     try {
       await _postRepository.deletePost(widget.session.token, widget.post.id);
-      print('Post ${widget.post.id} deletado com sucesso!');
       widget.onDeleted?.call();
     } catch (e) {
       if (mounted) {

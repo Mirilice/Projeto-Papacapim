@@ -35,7 +35,6 @@ class _NewPostTemplateState extends State<NewPostTemplate> {
     setState(() => _isPosting = true);
     try {
       await _postRepository.createPost(widget.session.token, texto);
-      print('Post criado com sucesso!');
       if (mounted) Navigator.pop(context, true); // true = sinaliza que postou
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
