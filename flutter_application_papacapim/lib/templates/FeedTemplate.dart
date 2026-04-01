@@ -29,7 +29,6 @@ class _FeedTemplateState extends State<FeedTemplate> {
   List<Post> _posts = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
-  bool _isFocused = false;
 
   // resultado de busca
   bool _isSearching = false;
@@ -44,7 +43,6 @@ class _FeedTemplateState extends State<FeedTemplate> {
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() => setState(() => _isFocused = _focusNode.hasFocus));
     _scrollController.addListener(_onScroll);
     _carregarPosts();
   }
@@ -165,7 +163,7 @@ Future<void> _realizarBusca(String query) async {
           ),
           flexibleSpace: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(70, 10, 12, 10),
+              padding: const EdgeInsets.fromLTRB(70, 10, 56, 10),
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
@@ -175,9 +173,7 @@ Future<void> _realizarBusca(String query) async {
                 child: TextField(
                   controller: _searchController,
                   focusNode: _focusNode,
-                  textAlign: _isFocused || _searchController.text.isNotEmpty
-                      ? TextAlign.start
-                      : TextAlign.center,
+                  textAlign: TextAlign.start,
                   textAlignVertical: TextAlignVertical.center,
                   textInputAction: TextInputAction.search,
                   onSubmitted: _realizarBusca,
